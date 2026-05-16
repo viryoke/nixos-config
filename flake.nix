@@ -32,23 +32,24 @@
     let
       # Helper function to create Home Manager configurations
       mkHomeConfig = { system, hostname, username, extraModules ? [] }:
+        let
+          isLinux = system == "x86_64-linux";
+        in
         home-manager.lib.homeManagerConfiguration {
           pkgs = import nixpkgs {
             inherit system;
             config = {
               allowUnfree = true;
               allowUnsupportedSystem = true;
+              allowBroken = true;
             };
             overlays = [
               niri-flake.overlays.niri
               neovim-nightly-overlay.overlays.default
             ];
           };
+          extraSpecialArgs = { inherit inputs isLinux; };
           modules = [
-            {
-              # Pass inputs to all modules that need them
-              _module.args.inputs = inputs;
-            }
             ./home.nix
             {
               home.username = username;
@@ -63,7 +64,7 @@
       mkDarwinConfig = { system, hostname, username }:
         nix-darwin.lib.darwinSystem {
           inherit system;
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs; isLinux = false; };
           modules = [
             home-manager.darwinModules.home-manager
             {
@@ -135,7 +136,7 @@
       nixosConfigurations = {
         nixos-desktop = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs; isLinux = true; };
           modules = [
             ./platforms/nixos-system.nix
             home-manager.nixosModules.home-manager

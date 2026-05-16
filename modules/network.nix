@@ -1,10 +1,11 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, isLinux, ... }:
 
 {
   # Clash Verge Rev - GUI proxy client (available in nixpkgs unstable)
-  home.packages = with pkgs; [
+  # Only available on Linux due to webkitgtk dependency
+  home.packages = lib.optionals isLinux (with pkgs; [
     clash-verge-rev
-  ];
+  ]);
 
   # Proxy aliases
   home.shellAliases = {

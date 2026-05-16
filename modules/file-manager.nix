@@ -39,6 +39,9 @@
             { on = [ "/" ]; run = "find"; }
             { on = [ "q" ]; run = "quit"; }
             { on = [ "<C-n>" ]; run = "create"; }
+            { on = [ "g" "h" ]; run = "cd ~"; desc = "Go to home"; }
+            { on = [ "g" "c" ]; run = "cd ~/.config"; desc = "Go to config"; }
+            { on = [ "g" "d" ]; run = "cd ~/Downloads"; desc = "Go to downloads"; }
           ];
         };
       };
@@ -46,14 +49,6 @@
         manager.cwd.fg = "#89b4fa";
         manager.hovered.bg = "#313244";
       };
-    };
-
-    keymaps = {
-      manager = [
-        { on = [ "g" "h" ]; run = "cd ~"; desc = "Go to home"; }
-        { on = [ "g" "c" ]; run = "cd ~/.config"; desc = "Go to config"; }
-        { on = [ "g" "d" ]; run = "cd ~/Downloads"; desc = "Go to downloads"; }
-      ];
     };
   };
 
@@ -69,7 +64,7 @@
   home.shellAliases = {
     rm = "trash-put";
     rl = "trash-list";
-    ur = "trash-restore";
+    tr = "trash-restore";
     te = "trash-empty";
   };
 }

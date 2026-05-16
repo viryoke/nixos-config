@@ -5,12 +5,6 @@
   home.packages = with pkgs; [
     # VSCode
     vscode
-
-    # VSCode extensions manager
-    vscode-extensions-update
-
-    # Alternative: VSCodium (open source build without telemetry)
-    # vscodium
   ];
 
   # VSCode configuration (has built-in Dracula theme extension)

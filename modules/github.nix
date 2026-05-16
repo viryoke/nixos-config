@@ -4,12 +4,11 @@
   # GitHub CLI (gh)
   programs.gh = {
     enable = true;
-    gitProtocol = "ssh";
-    editor = "nvim";
-    prompt = "enabled";
-    pager = "bat";
-
     settings = {
+      git_protocol = "ssh";
+      editor = "nvim";
+      prompt = "enabled";
+      pager = "bat";
       aliases = {
         co = "pr checkout";
         pv = "pr view";
@@ -26,7 +25,6 @@
 
   # Additional GitHub-related packages
   home.packages = with pkgs; [
-    gh-emoji
     act
     actionlint
   ];

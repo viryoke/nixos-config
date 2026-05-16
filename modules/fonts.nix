@@ -14,10 +14,10 @@
     nerd-fonts.fira-code
 
     # Emoji font
-    noto-fonts-emoji
+    noto-fonts-color-emoji
 
     # CJK fonts (for Chinese/Japanese/Korean)
-    noto-fonts-cjk
+    noto-fonts
   ];
 
   # Fontconfig configuration

@@ -1,8 +1,8 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, isLinux, ... }:
 
 {
-  # Theme-related packages - minimal set
-  home.packages = with pkgs; [
+  # Theme-related packages - minimal set (Linux only due to GTK dependencies)
+  home.packages = lib.optionals isLinux (with pkgs; [
     # GTK themes (Linux) - Dracula
     dracula-theme
 
@@ -14,7 +14,7 @@
 
     # Cursor themes (Linux)
     bibata-cursors
-  ];
+  ]);
 
   # GTK configuration (Linux only) - Dracula theme
   gtk = lib.mkIf pkgs.stdenv.isLinux {

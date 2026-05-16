@@ -49,7 +49,6 @@
     # Mac application shortcuts
     o = "open";
     oa = "open -a";
-    code = "open -a 'Visual Studio Code'";
     safari = "open -a Safari";
     chrome = "open -a 'Google Chrome'";
   };

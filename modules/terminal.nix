@@ -1,10 +1,11 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, isLinux, ... }:
 
 {
   # Ghostty terminal emulator (has built-in Dracula theme)
-  home.packages = with pkgs; [
+  # Currently has build issues on macOS, only use on Linux
+  home.packages = lib.optionals isLinux (with pkgs; [
     ghostty
-  ];
+  ]);
 
   # Ghostty configuration - uses built-in Dracula theme
   xdg.configFile."ghostty/config".text = ''

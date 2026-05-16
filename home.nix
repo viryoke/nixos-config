@@ -1,7 +1,7 @@
-{ config, pkgs, lib, inputs, ... }:
+{ config, pkgs, lib, inputs, isLinux ? false, ... }:
 
 {
-  # Common imports - all modules
+  # Common imports - all cross-platform modules
   imports = [
     ./modules/shell.nix
     ./modules/terminal.nix
@@ -18,7 +18,7 @@
     ./modules/vscode.nix
     ./modules/zellij.nix
     ./modules/github.nix
-  ] ++ lib.optionals (pkgs.stdenv.isLinux) [
+  ] ++ lib.optionals isLinux [
     ./modules/wm.nix
     ./modules/display.nix
     ./modules/bar.nix
@@ -44,7 +44,7 @@
     };
     gc = {
       automatic = true;
-      frequency = "weekly";
+      dates = "weekly";
       options = "--delete-older-than 7d";
     };
   };

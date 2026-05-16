@@ -4,52 +4,66 @@
   # Git configuration
   programs.git = {
     enable = true;
-    userName = "viryoke";
-    userEmail = "viryoke@users.noreply.github.com";
-
-    # Git aliases
-    aliases = {
-      co = "checkout";
-      br = "branch";
-      st = "status";
-      lg = "log --oneline --graph --all";
-      cm = "commit -m";
-      am = "commit --amend --no-edit";
-      unstage = "reset HEAD --";
-      last = "log -1 HEAD";
-      visual = "!gitk";
-      branches = "branch -a";
-      tags = "tag -n1";
-      stashes = "stash list";
-      stats = "diff --stat";
-      discard = "checkout --";
-      uncommit = "reset --soft HEAD^";
-      filelog = "log -u";
-      diffc = "diff --cached";
-      track = "!git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD) $(git symbolic-ref --short HEAD)";
-    };
-
-    # Extra configuration
-    extraConfig = {
+    settings = {
+      user = {
+        name = "viryoke";
+        email = "viryoke@users.noreply.github.com";
+      };
+      alias = {
+        co = "checkout";
+        br = "branch";
+        st = "status";
+        lg = "log --oneline --graph --all";
+        cm = "commit -m";
+        am = "commit --amend --no-edit";
+        unstage = "reset HEAD --";
+        last = "log -1 HEAD";
+        visual = "!gitk";
+        branches = "branch -a";
+        tags = "tag -n1";
+        stashes = "stash list";
+        stats = "diff --stat";
+        discard = "checkout --";
+        uncommit = "reset --soft HEAD^";
+        filelog = "log -u";
+        diffc = "diff --cached";
+        track = "!git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD) $(git symbolic-ref --short HEAD)";
+      };
       init.defaultBranch = "main";
-      core.editor = "nvim";
-      core.pager = "delta";
-      core.excludesfile = "${config.xdg.configHome}/git/ignore";
-      core.attributesfile = "${config.xdg.configHome}/git/attributes";
+      core = {
+        editor = "nvim";
+        pager = "delta";
+        excludesfile = "${config.xdg.configHome}/git/ignore";
+        attributesfile = "${config.xdg.configHome}/git/attributes";
+      };
       pull.rebase = false;
-      push.autoSetupRemote = true;
-      push.followTags = true;
-      fetch.prune = true;
-      fetch.pruneTags = true;
-      rebase.autoStash = true;
-      rebase.autosquash = true;
-      merge.conflictstyle = "zdiff3";
-      merge.tool = "meld";
-      mergetool.meld.cmd = "meld \"$LOCAL\" \"$MERGED\" \"$REMOTE\"";
-      mergetool.meld.trustExitCode = false;
-      diff.tool = "meld";
-      difftool.meld.cmd = "meld \"$LOCAL\" \"$REMOTE\"";
-      difftool.prompt = false;
+      push = {
+        autoSetupRemote = true;
+        followTags = true;
+      };
+      fetch = {
+        prune = true;
+        pruneTags = true;
+      };
+      rebase = {
+        autoStash = true;
+        autosquash = true;
+      };
+      merge = {
+        conflictstyle = "zdiff3";
+        tool = "meld";
+      };
+      mergetool.meld = {
+        cmd = "meld \"$LOCAL\" \"$MERGED\" \"$REMOTE\"";
+        trustExitCode = false;
+      };
+      diff = {
+        tool = "meld";
+      };
+      difftool = {
+        meld.cmd = "meld \"$LOCAL\" \"$REMOTE\"";
+        prompt = false;
+      };
       credential.helper = "store --file=${config.xdg.dataHome}/git/credentials";
       rerere.enabled = true;
       log.date = "iso";
@@ -58,44 +72,18 @@
       transfer.fsckobjects = true;
       receive.fsckobjects = true;
       dispatch.autoSetupMerge = true;
-      advice.detachedHead = false;
-      advice.pushNonFastForward = false;
-      status.showUntrackedFiles = "all";
-      status.short = true;
-      status.branch = true;
+      advice = {
+        detachedHead = false;
+        pushNonFastForward = false;
+      };
+      status = {
+        showUntrackedFiles = "all";
+        short = true;
+        branch = true;
+      };
       tag.sort = "version:refname";
       branch.sort = "-committerdate";
       include.path = "${config.xdg.configHome}/git/config.local";
-    };
-
-    # Delta integration (better diff viewer)
-    delta = {
-      enable = true;
-      options = {
-        navigate = true;
-        light = false;
-        side-by-side = true;
-        line-numbers = true;
-        hyperlinks = true;
-        hyperlinks-commit-link-style = "commit.hash";
-        syntax-theme = "Catppuccin Mocha";
-        theme = "Catppuccin Mocha";
-        file-style = "omit";
-        hunk-header-style = "line-number code";
-        minus-style = "syntax #f38ba8";
-        plus-style = "syntax #a6e3a1";
-        minus-emph-style = "syntax #f38ba8";
-        plus-emph-style = "syntax #a6e3a1";
-        minus-non-emph-style = "syntax #313244";
-        plus-non-emph-style = "syntax #313244";
-        blame-format = "{timestamp} {author}";
-        blame-code-style = "syntax";
-        blame-separator-format = "| ";
-        blame-separator-style = "#6c7086";
-        blame-padding-format = " {commit:";
-        max-line-distance = 0.6;
-        true-color = "always";
-      };
     };
 
     # Hooks
@@ -109,6 +97,37 @@
           echo "Consider using git-lfs for large files"
         fi
       '';
+    };
+  };
+
+  # Delta integration (better diff viewer)
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+    options = {
+      navigate = true;
+      light = false;
+      side-by-side = true;
+      line-numbers = true;
+      hyperlinks = true;
+      hyperlinks-commit-link-style = "commit.hash";
+      syntax-theme = "Catppuccin Mocha";
+      theme = "Catppuccin Mocha";
+      file-style = "omit";
+      hunk-header-style = "line-number code";
+      minus-style = "syntax #f38ba8";
+      plus-style = "syntax #a6e3a1";
+      minus-emph-style = "syntax #f38ba8";
+      plus-emph-style = "syntax #a6e3a1";
+      minus-non-emph-style = "syntax #313244";
+      plus-non-emph-style = "syntax #313244";
+      blame-format = "{timestamp} {author}";
+      blame-code-style = "syntax";
+      blame-separator-format = "| ";
+      blame-separator-style = "#6c7086";
+      blame-padding-format = " {commit:";
+      max-line-distance = "0.6";
+      true-color = "always";
     };
   };
 

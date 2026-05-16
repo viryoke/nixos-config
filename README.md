@@ -29,15 +29,15 @@ nix-config/
 ├── deploy.sh              # 部署辅助脚本
 ├── modules/               # 功能模块 (22个)
 │   ├── shell.nix          # Shell (zsh, nushell)
-│   ├── terminal.nix       # 终端 (ghostty)
+│   ├── terminal.nix       # 终端 (ghostty [Linux], alacritty/kitty [mac])
 │   ├── editor.nix         # 编辑器 (neovim, helix)
 │   ├── cli-tools.nix      # CLI工具集
 │   ├── file-manager.nix   # 文件管理 (yazi)
-│   ├── version-control.nix# Git配置
-│   ├── fonts.nix          # 字体
-│   ├── themes.nix         # GTK主题
+│   ├── version-control.nix# Git + Delta配置
+│   ├── fonts.nix          # 字体 (JetBrains Mono, Noto)
+│   ├── themes.nix         # GTK主题 [Linux]
 │   ├── ai-tools.nix       # AI工具
-│   ├── network.nix        # 网络/代理
+│   ├── network.nix        # 网络/代理 (clash-verge-rev [Linux])
 │   ├── vscode.nix         # VSCode配置
 │   ├── zellij.nix         # 终端复用器
 │   ├── github.nix         # GitHub CLI
@@ -51,7 +51,7 @@ nix-config/
 │   ├── input-method.nix   # 输入法 (fcitx5) [Linux]
 │   └── nvidia.nix         # NVIDIA显卡 [Linux]
 ├── platforms/             # 平台特定配置
-│   ├── mac.nix            # macOS
+│   ├── mac.nix            # macOS (alacritty, kitty)
 │   ├── ubuntu.nix         # Ubuntu
 │   ├── arch.nix           # Arch Linux
 │   ├── nixos.nix          # NixOS
@@ -74,6 +74,9 @@ sh <(curl -L https://nixos.org/nix/install) --daemon
 # 启用 Flakes
 mkdir -p ~/.config/nix
 echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+
+# 可选：配置 GitHub Token 绕过 API 速率限制
+echo "ghp_your_token_here" > ~/.config/nix/github-token.txt
 ```
 
 ### 2. 应用配置
@@ -82,8 +85,11 @@ echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 git clone https://github.com/viryoke/nix-config.git
 cd nix-config
 
-# 使用部署脚本（自动检测平台）
+# 使用部署脚本（自动检测平台，自动备份冲突文件）
 ./deploy.sh deploy
+
+# 跳过 flake update（遇到 API 限制时）
+SKIP_UPDATE=1 ./deploy.sh deploy
 
 # 或手动指定配置
 # macOS (Home Manager)
@@ -114,11 +120,14 @@ chsh -s $(which zsh)
 ### 4. 部署脚本命令
 
 ```bash
-./deploy.sh deploy    # 部署配置（自动检测平台）
+./deploy.sh deploy    # 部署配置（自动检测平台，自动备份冲突文件）
 ./deploy.sh rollback  # 回滚到上一版本
 ./deploy.sh generations # 查看历史版本
 ./deploy.sh clean     # 清理7天前的旧版本
 ./deploy.sh check     # 检查依赖是否安装
+
+# 环境变量选项
+SKIP_UPDATE=1 ./deploy.sh deploy  # 跳过 flake update（API限制时）
 ```
 
 ---
@@ -138,27 +147,26 @@ chsh -s $(which zsh)
 
 ## 功能模块
 
-### 跨平台模块 (15个)
+### 跨平台模块 (14个)
 
 | 模块 | 主要组件 | 功能 |
 |------|----------|------|
 | **shell** | zsh, nushell, starship | 多Shell支持，自动补全，语法高亮 |
-| **terminal** | ghostty | GPU加速终端，透明背景 |
 | **editor** | neovim (LazyVim), helix | 代码编辑器 |
 | **cli-tools** | bat, ripgrep, fd, eza, zoxide | 现代CLI工具替代 |
 | **file-manager** | yazi | 键盘操作文件管理器 |
 | **version-control** | git, lazygit, delta | Git增强配置 |
-| **fonts** | JetBrains Mono NF | Nerd Font图标字体 |
-| **themes** | Dracula GTK | 统一配色系统 |
+| **fonts** | JetBrains Mono NF, Noto | Nerd Font图标字体 |
 | **ai-tools** | Claude Code CLI | AI编程助手 |
-| **network** | clash-verge-rev | 代理客户端 |
 | **vscode** | VSCode配置 | 编辑器设置 |
 | **zellij** | zellij | 终端复用器 |
 | **github** | gh CLI | GitHub命令行 |
 | **python** | uv | Python包管理 |
 | **nodejs** | bun | JavaScript运行时 |
+| **terminal** | ghostty [Linux], alacritty/kitty [mac] | 终端模拟器 |
+| **network** | clash-verge-rev [Linux] | 代理客户端 |
 
-### Linux专属模块 (7个)
+### Linux专属模块 (9个)
 
 | 模块 | 主要组件 | 功能 |
 |------|----------|------|
@@ -169,12 +177,14 @@ chsh -s $(which zsh)
 | **container** | podman | Rootless容器 |
 | **input-method** | fcitx5 | 中文输入法 |
 | **nvidia** | nvtop | GPU监控 |
+| **themes** | Dracula GTK, Papirus图标 | 统一配色系统 |
+| **terminal** | ghostty | GPU加速终端 |
 
 ### macOS专属配置
 
 | 配置文件 | 主要组件 | 功能 |
 |----------|----------|------|
-| **mac.nix** | Karabiner-Elements, Rectangle | 键盘映射、窗口管理 |
+| **mac.nix** | Karabiner-Elements, Rectangle, alacritty, kitty | 键盘映射、窗口管理、终端 |
 | **darwin-system.nix** | 系统偏好设置 | Dock、Finder、Trackpad配置 |
 | **Brewfile** | OrbStack, GUI应用 | Homebrew安装GUI工具 |
 
@@ -189,9 +199,17 @@ chsh -s $(which zsh)
 | 工具 | 用途 | 使用场景与命令示例 |
 |------|------|-------------------|
 | zsh | 默认Shell | 启动新终端自动加载，配置自动补全、历史搜索（Ctrl+r）、语法高亮。SSH连接后自动启用 |
-| nushell | 数据处理Shell | 处理结构化数据管道，JSON/CSV保持类型：`ls | where size > 1mb | select name size`。适合数据分析脚本 |
-| starship | 跨平台提示符 | 显示当前目录、Git分支（紫色）、Python版本（🐍）、命令执行时间（黄色）。跨平台统一样式 |
-| ghostty | 主终端 | GPU加速渲染，支持分屏、标签页。`Ctrl+t`新建标签，`Ctrl+Enter`水平分屏，`Ctrl+Shift+Enter`垂直分屏。透明度0.9+模糊20px |
+| nushell | 数据处理Shell | 处理结构化数据管道，JSON/CSV保持类型：`ls \| where size > 1mb \| select name size`。适合数据分析脚本 |
+| starship | 跨平台提示符 | 显示当前目录、Git分支（紫色）、Python版本（蛇）、命令执行时间（黄色）。跨平台统一样式 |
+| zellij | 终端复用器 | 会话持久化，SSH断开保持会话。`Ctrl+t`新标签，`Ctrl+n`新窗格，`Alt+1-9`切换标签 |
+
+#### 终端 (平台差异)
+
+| 工具 | 平台 | 用途 |
+|------|------|------|
+| ghostty | Linux | GPU加速终端，透明背景，Dracula内置主题 |
+| alacritty | macOS | GPU加速终端 |
+| kitty | macOS | GPU加速终端，支持图片显示 |
 
 #### 编辑器
 
@@ -235,7 +253,6 @@ chsh -s $(which zsh)
 |------|------|-------------------|
 | uv | Python包管理 | 比pip快10-100倍。`uv venv`创建环境，`uv pip install requests`安装包，`uv pip freeze > requirements.txt`导出依赖。项目级环境管理 |
 | bun | JS运行时 | 替代npm/yarn，启动快。`bun install`安装依赖，`bun run dev`运行脚本，`bun test`执行测试。前端项目首选 |
-| direnv | 环境切换 | 进入目录自动加载环境。项目根目录创建`.envrc`：`use flake`或`layout python`。`cd project`自动激活，`cd ..`自动退出 |
 | jq | JSON处理 | 解析转换JSON。`jq '.data[].name' response.json`提取字段，`jq -r`输出纯文本，`jq 'keys'`查看键。处理API响应必备 |
 
 #### 系统监控
@@ -253,7 +270,6 @@ chsh -s $(which zsh)
 | curl | HTTP客户端 | 测试API、下载文件。`curl -X POST -d '{"key":"val"}' api.example.com`发送请求，`curl -I url`查看响应头 |
 | wget | 文件下载 | 大文件下载支持断点续传。`wget -c url`继续下载，`wget -m url`镜像站点。比curl更适合文件下载 |
 | httpie | HTTP客户端 | 更友好的curl。`http GET api.example.com`发送请求，`http POST api.example.com key=value`发送JSON。语法更直观 |
-| clash-verge-rev | 代理GUI | 网络代理工具。开机自启动，GUI配置节点。`proxy-on`启用命令行代理（127.0.0.1:7890），`proxy-off`禁用，`proxy-test`测试连接 |
 
 #### 压缩与同步
 
@@ -271,8 +287,9 @@ chsh -s $(which zsh)
 | just | 任务运行器 | 项目任务自动化，替代Makefile。`just test`运行测试，`just build`构建项目。justfile语法简单：`test: pytest` |
 | watchexec | 文件监控 | 文件变化自动执行命令。`watchexec -e py 'pytest'`Python文件变化自动测试，`watchexec -e rs 'cargo build'`Rust自动编译 |
 | tokei | 代码统计 | 统计项目代码。`tokei ./`显示行数、文件数、语言分布。了解项目规模 |
-| trash-cli | 安全删除 | 删除到回收站可恢复。`trash-put file`删除，`trash-list`查看，`trash-restore`恢复。防止误删（已别名rm） |
+| trash-cli | 安全删除 | 删除到回收站可恢复。`rm`已别名到trash-put，`rl`查看列表，`tr`恢复，`te`清空。防止误删 |
 | sd | sed替代 | 文本替换。`sd 'old' 'new' file`替换，`sd -s 'old' 'new'`原地替换。语法比sed简单 |
+| difftastic | Diff工具 | 语法感知的diff。`difft file1 file2`对比文件，支持多种语言语法高亮 |
 
 #### AI工具
 
@@ -330,11 +347,26 @@ chsh -s $(which zsh)
 | dive | 镜像分析 | 分析镜像层结构。`dive ubuntu:latest`查看每层内容和大小。优化镜像大小必备工具 |
 | podman-tui | Podman TUI | 可视化管理界面。`pt`启动，查看容器、镜像、卷、网络。替代lazydocker |
 
-#### 壁纸
+#### 壁纸与主题
 
 | 工具 | 用途 | 使用场景与命令示例 |
 |------|------|-------------------|
 | hyprpaper | 壁纸管理 | 设置桌面壁纸。开机自启动。`wp-list`查看壁纸列表，`wp-random`随机切换，`wp-set wallpaper.jpg`指定壁纸 |
+| dracula-theme | GTK主题 | Dracula配色GTK主题。自动应用于GTK应用 |
+| papirus-icon-theme | 图标主题 | Papirus图标集，配合Dracula主题 |
+| bibata-cursors | 光标主题 | Bibata光标，现代简约风格 |
+
+#### 终端
+
+| 工具 | 用途 | 使用场景与命令示例 |
+|------|------|-------------------|
+| ghostty | GPU加速终端 | 透明背景0.9+模糊20px。`Ctrl+t`新建标签，`Ctrl+Enter`水平分屏，`Ctrl+Shift+Enter`垂直分屏。内置Dracula主题 |
+
+#### 代理
+
+| 工具 | 用途 | 使用场景与命令示例 |
+|------|------|-------------------|
+| clash-verge-rev | 代理GUI | 网络代理工具。开机自启动，GUI配置节点。`proxy-on`启用命令行代理（127.0.0.1:7890），`proxy-off`禁用，`proxy-test`测试连接 |
 
 ---
 
@@ -345,6 +377,8 @@ chsh -s $(which zsh)
 | OrbStack | Docker/K8s替代 | 比Docker Desktop快5倍、内存少90%。支持docker/kubectl命令。`orb ubuntu run "apt update"`运行Linux命令，`orb create nixos nix`创建NixOS VM |
 | Rectangle | 窗口管理 | 键盘快捷键调整窗口位置。`Meta+Ctrl+M`最大化，`Meta+Ctrl+Left`左半屏，`Meta+Ctrl+C`居中 |
 | Karabiner-Elements | 键盘映射 | Caps Lock映射为Ctrl+Escape。自定义键盘快捷键，Mac键盘定制必备 |
+| alacritty | GPU终端 | 跨平台GPU加速终端 |
+| kitty | GPU终端 | 支持图片显示的终端 |
 
 ---
 
@@ -377,7 +411,10 @@ find    → fd                       # 快速查找
 grep    → rg                       # 快速搜索
 du      → dust                     # 磁盘使用
 cd      → z                        # 智能跳转
-rm      → trash-put                # 安全删除 (Linux)
+rm      → trash-put                # 安全删除
+rl      → trash-list               # 查看回收站
+tr      → trash-restore            # 恢复文件
+te      → trash-empty              # 清空回收站
 ```
 
 ### Git操作
@@ -412,6 +449,36 @@ cb-clear    → cliphist clear       # 清空历史
 cb-select   → 选择历史项粘贴       # fuzzel选择
 ```
 
+### Python (uv)
+
+```bash
+pi      → uv pip install           # 安装包
+pu      → uv pip uninstall         # 卸载包
+pf      → uv pip freeze            # 导出依赖
+pl      → uv pip list              # 列出包
+pv      → uv venv                  # 创建环境
+ua      → uv add                   # 添加依赖
+ur      → uv remove                # 移除依赖
+us      → uv sync                  # 同步依赖
+ul      → uv lock                  # 锁定依赖
+urun    → uv run                   # 运行命令
+uinit   → uv init                  # 初始化项目
+```
+
+### GitHub (gh)
+
+```bash
+ghc     → gh repo create           # 创建仓库
+ghr     → gh repo view             # 查看仓库
+ghf     → gh repo fork             # Fork仓库
+ghcl    → gh repo clone            # 克隆仓库
+prc     → gh pr create             # 创建PR
+prv     → gh pr view               # 查看PR
+prm     → gh pr merge              # 合并PR
+isc     → gh issue create          # 创建Issue
+isv     → gh issue view            # 查看Issue
+```
+
 ### 系统管理
 
 ```bash
@@ -442,7 +509,7 @@ update      → nix flake update     # 更新Flake
 | `Print` | 截屏 |
 | `Shift+Print` | 区域截图 |
 
-### Ghostty终端
+### Ghostty终端 (Linux)
 
 | 按键 | 功能 |
 |------|------|
@@ -507,6 +574,7 @@ update      → nix flake update     # 更新Flake
 | Waybar | 自定义配色 |
 | Zellij | 自定义主题 |
 | GTK | Dracula主题包 |
+| Bat | Dracula主题 |
 
 ---
 
@@ -522,7 +590,7 @@ nix flake update
 nix flake update nixpkgs
 
 # 应用配置
-home-manager switch --flake .#ubuntu
+./deploy.sh deploy
 ```
 
 ### 查看信息
@@ -536,8 +604,14 @@ nix flake check       # 检查配置语法
 ### 回滚配置
 
 ```bash
-home-manager generations       # 查看历史
-home-manager switch --rollback # 回滚上一版本
+./deploy.sh generations  # 查看历史
+./deploy.sh rollback     # 回滚上一版本
+```
+
+### 清理旧版本
+
+```bash
+./deploy.sh clean     # 清理7天前的旧版本
 ```
 
 ---
@@ -551,6 +625,7 @@ home-manager switch --rollback # 回滚上一版本
 - [Niri](https://github.com/YaLTeR/niri)
 - [Zellij](https://zellij.dev/)
 - [Dracula Theme](https://draculatheme.com/)
+- [OrbStack](https://orbstack.dev/)
 
 ---
 
