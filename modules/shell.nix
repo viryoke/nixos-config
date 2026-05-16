@@ -7,6 +7,7 @@
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
+    dotDir = config.home.homeDirectory;  # Keep legacy behavior
 
     shellAliases = {
       ls = "eza --icons --group-directories-first";
@@ -44,7 +45,7 @@
       path = "${config.xdg.dataHome}/zsh/history";
     };
 
-    initExtra = ''
+    initContent = ''
       # Note: zoxide is configured in cli-tools.nix with programs.zoxide
       # which automatically handles shell integration
       # Key bindings

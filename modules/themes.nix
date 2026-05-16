@@ -25,6 +25,12 @@
       package = pkgs.dracula-theme;
     };
 
+    # Keep GTK4 theme synced with GTK3 (legacy behavior)
+    gtk4.theme = {
+      name = "Dracula";
+      package = pkgs.dracula-theme;
+    };
+
     iconTheme = {
       name = "Papirus-Dark";
       package = pkgs.papirus-icon-theme;

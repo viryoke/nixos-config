@@ -8,6 +8,8 @@
     viAlias = true;
     vimAlias = true;
     vimdiffAlias = true;
+    withRuby = false;  # New default
+    withPython3 = false;  # New default
 
     package = pkgs.neovim;
 

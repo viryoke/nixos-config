@@ -1,19 +1,21 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, isLinux, ... }:
 
-{
-  # Fcitx5 - Input Method Framework for Chinese input
+lib.mkIf isLinux {
+  # Fcitx5 - Input Method Framework for Chinese input (Linux only)
 
-  home.packages = with pkgs; [
+  home.packages = [
     # Fcitx5 core
-    fcitx5
-    fcitx5-gtk
-    fcitx5-qt
+    pkgs.fcitx5
+    pkgs.fcitx5-gtk
 
-    # Chinese input
-    fcitx5-chinese-addons
+    # Qt support
+    pkgs.libsForQt5.fcitx5-qt
+
+    # Chinese input (from qt6Packages)
+    pkgs.qt6Packages.fcitx5-chinese-addons
 
     # Configuration tool
-    fcitx5-configtool
+    pkgs.qt6Packages.fcitx5-configtool
   ];
 
   # Fcitx5 environment variables
@@ -41,20 +43,18 @@
   '';
 
   # Autostart fcitx5
-  systemd.user.services = lib.mkIf pkgs.stdenv.isLinux {
-    fcitx5 = {
-      Unit = {
-        Description = "Fcitx5 Input Method Daemon";
-        After = [ "graphical-session.target" ];
-      };
-      Service = {
-        Type = "simple";
-        ExecStart = "${pkgs.fcitx5}/bin/fcitx5 -d";
-        Restart = "on-failure";
-      };
-      Install = {
-        WantedBy = [ "graphical-session.target" ];
-      };
+  systemd.user.services.fcitx5 = {
+    Unit = {
+      Description = "Fcitx5 Input Method Daemon";
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.fcitx5}/bin/fcitx5 -d";
+      Restart = "on-failure";
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
     };
   };
 }
