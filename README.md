@@ -176,7 +176,7 @@ SKIP_UPDATE=1 ./deploy.sh deploy  # 跳过 flake update（API限制时）
 | **wallpaper** | hyprpaper | 壁纸管理 |
 | **container** | podman | Rootless容器 |
 | **input-method** | fcitx5 | 中文输入法 |
-| **nvidia** | nvtop | GPU监控 |
+| **nvidia** | nvitop, btop | GPU监控 |
 | **themes** | Dracula GTK, Papirus图标 | 统一配色系统 |
 | **terminal** | ghostty | GPU加速终端 |
 
@@ -326,8 +326,10 @@ SKIP_UPDATE=1 ./deploy.sh deploy  # 跳过 flake update（API限制时）
 | 工具 | 用途 | 使用场景与命令示例 |
 |------|------|-------------------|
 | fcitx5 | 输入法框架 | Ctrl+Space切换中英文。开机自启动，支持拼音输入。环境变量：`GTK_IM_MODULE=fcitx`，`QT_IM_MODULE=fcitx` |
-| fcitx5-chinese-addons | 拼音引擎 | 拼音输入，支持词库、模糊音。输入中文必备组件 |
-| fcitx5-configtool | 配置工具 | 图形界面配置输入法。`fcitx5-configtool`启动，添加输入法、设置快捷键 |
+| fcitx5-chinese-addons | 拼音引擎 | 拼音输入，支持词库、模糊音。输入中文必备组件（通过qt6Packages安装） |
+| fcitx5-configtool | 配置工具 | 图形界面配置输入法。`fcitx5-configtool`启动，添加输入法、设置快捷键（通过qt6Packages安装） |
+| libsForQt5.fcitx5-qt | Qt5支持 | Qt5应用输入法支持 |
+| qt6Packages.fcitx5-qt | Qt6支持 | Qt6应用输入法支持 |
 
 #### 音量与亮度
 
@@ -367,6 +369,16 @@ SKIP_UPDATE=1 ./deploy.sh deploy  # 跳过 flake update（API限制时）
 | 工具 | 用途 | 使用场景与命令示例 |
 |------|------|-------------------|
 | clash-verge-rev | 代理GUI | 网络代理工具。开机自启动，GUI配置节点。`proxy-on`启用命令行代理（127.0.0.1:7890），`proxy-off`禁用，`proxy-test`测试连接 |
+
+#### NVIDIA GPU监控
+
+| 工具 | 用途 | 使用场景与命令示例 |
+|------|------|-------------------|
+| nvitop | NVIDIA监控 | Python实现的GPU监控，彩色TUI界面。`nvitop`启动，显示GPU使用率、内存、进程。比nvidia-smi更直观 |
+| btop | 系统监控 | 现代化系统监控，支持GPU显示。`btop`启动，同时显示CPU、内存、磁盘、GPU状态 |
+| mesa-demos | OpenGL工具 | OpenGL信息工具。`glxinfo \| grep NVIDIA`查看GPU信息，`glxgears`测试OpenGL性能 |
+| vulkan-tools | Vulkan工具 | Vulkan信息工具。`vulkaninfo`查看Vulkan支持情况 |
+| glmark2 | OpenGL基准 | OpenGL性能测试。`glmark2`运行基准测试，评估GPU性能 |
 
 ---
 
