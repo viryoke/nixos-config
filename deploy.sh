@@ -53,7 +53,7 @@ check_nix() {
 
 # Check if Flakes are enabled
 check_flakes() {
-    if ! nix flake --help &> /dev/null 2>&1; then
+    if ! nix flake --help --extra-experimental-features "nix-command flakes" &> /dev/null 2>&1; then
         echo -e "${YELLOW}Flakes are not enabled${NC}"
         echo "Enabling Flakes..."
         mkdir -p ~/.config/nix
@@ -69,7 +69,7 @@ check_home_manager() {
     if ! command -v home-manager &> /dev/null; then
         echo -e "${YELLOW}Home Manager is not installed${NC}"
         echo "Installing Home Manager..."
-        nix run home-manager/master -- init
+        nix run --extra-experimental-features "nix-command flakes" home-manager/master -- init
         echo -e "${GREEN}Home Manager installed${NC}"
     else
         echo -e "${GREEN}Home Manager is available${NC}"
@@ -92,7 +92,7 @@ deploy() {
     # Update flake inputs
     echo -e "${YELLOW}Updating flake inputs...${NC}"
     cd "$config_dir"
-    nix flake update
+    nix flake update --extra-experimental-features "nix-command flakes"
 
     # Deploy based on platform
     case "$platform" in
