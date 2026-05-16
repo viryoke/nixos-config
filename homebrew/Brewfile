@@ -1,0 +1,96 @@
+# Homebrew Brewfile for Mac-only GUI applications
+# Use this for packages not available in nixpkgs or with Mac-specific dependencies
+
+# Taps
+tap "homebrew/cask"
+tap "homebrew/cask-fonts"
+tap "homebrew/cask-versions"
+tap "homebrew/services"
+
+# CLI tools (if nixpkgs version has issues on Mac)
+brew "git"
+brew "wget"
+brew "curl"
+
+# GUI Applications - Mac-only or better from Homebrew
+
+# Terminal emulators
+cask "ghostty"  # If not in nixpkgs
+cask "alacritty"
+cask "kitty"
+
+# Window management
+cask "rectangle"  # Window management
+cask "kawa"  # Alternative window manager
+
+# Container management
+cask "orbstack"  # Docker alternative for Mac
+
+# Development tools
+cask "visual-studio-code"
+cask "cursor"  # AI IDE
+cask "zed"  # Fast editor
+cask "jetbrains-gateway"
+
+# AI tools
+cask "claude"  # Claude desktop app
+
+# Communication
+cask "discord"
+cask "slack"
+cask "telegram"
+cask "zoom"
+
+# Productivity
+cask "notion"
+cask "obsidian"
+cask "logseq"
+
+# Browsers
+cask "firefox"
+cask "google-chrome"
+cask "arc"
+cask "brave-browser"
+
+# Media
+cask "spotify"
+cask "vlc"
+cask "iina"  # Mac media player
+
+# Network tools
+cask "clash-verge-rev"  # Proxy client
+cask "v2rayu"  # Alternative proxy
+
+# File management
+cask "dropbox"
+cask "google-drive"
+
+# Graphics & Design
+cask "figma"
+cask "drawio"
+
+# Fonts (if nixpkgs fonts have issues)
+cask "font-jetbrains-mono-nerd-font"
+cask "font-fira-code-nerd-font"
+cask "font-hack-nerd-font"
+
+# System utilities
+cask "karabiner-elements"  # Keyboard remapping
+cask "little-snitch"  # Network monitor
+cask "appcleaner"  # App uninstaller
+cask "the-unarchiver"  # Archive utility
+cask "veracrypt"  # Encryption
+
+# Screenshots & Recording
+cask "cleanmymac"  # Screen cleaner
+cask "kap"  # Screen recording
+
+# Notes: This file should be used as backup for Mac-specific apps
+# Most CLI/TUI tools should come from Nix for consistency
+
+# Usage:
+# brew bundle --file=~/.config/homebrew/Brewfile
+
+# Or install individual casks:
+# brew install --cask orbstack
+# brew install --cask rectangle
